@@ -45,12 +45,14 @@ Window {
             }
         }
 
-        Item {
+        Rectangle {
             x: dockItemsWidth + windowPadding
             width: parent.width - dockItemsWidth - windowPadding
             height: parent.height
+            color: backgroundColor
             Loader {
                 id: loader
+                anchors.fill: parent
                 objectName: "loader"
                 source: "trainer.qml"
             }
