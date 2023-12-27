@@ -6,19 +6,23 @@ Item {
     property string unprintedCharColor: "#FFC857"
     property string wrongCharColor: "#DB3A34"
     property string printedText: 'This i'
+    property string wrongChar: 'i'
     property string activeChar: 's'
     property string unprintedText: ' a sample unprinted text about'
-    property int textSize: parent.width * 0.03
+    property int textSize: Math.min(parent.width * 0.03, 36)
 
     id: trainer
 
+    anchors.fill: parent
+
     Rectangle {
-        width: Window.width * 0.7
-        height: Window.height * 0.7
+        width: parent.width * 0.7
+        height: parent.height * 0.6
         anchors.centerIn: parent
         color: backgroundColor
 
         Column {
+            width: parent.width
 
             Text {
                 text: 'printed text'
@@ -34,6 +38,12 @@ Item {
                     color: printedCharColor
                     font.pixelSize: textSize
 
+                }
+
+                Text {
+                    text: activeChar
+                    color: wrongCharColor
+                    font.pixelSize: textSize
                 }
 
                 Text {
@@ -57,11 +67,19 @@ Item {
             }
 
             Text {
+                id: unvisibleText
                 text: 'unprinted text unprinted text '
                 font.pixelSize: textSize
                 color: unprintedCharColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
+
+        }
+        Rectangle {
+            width: parent.width
+            height: textSize * 1.2
+            y: unvisibleText.y
+            color: backgroundColor
         }
     }
 }
