@@ -1,6 +1,6 @@
-from PyQt6.QtCore import QUrl
-from PyQt6.QtGui import QGuiApplication, QFont, QFontDatabase
-from PyQt6.QtQml import QQmlApplicationEngine
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QGuiApplication, QFont, QFontDatabase
+from PyQt5.QtQml import QQmlApplicationEngine
 
 if __name__ == "__main__":
     import sys
