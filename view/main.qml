@@ -1,13 +1,19 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
+import QtGraphicalEffects 1.15
+
+import "screens"
 
 Window {
     property string backgroundColor: "#323031"
+    property string textColor: "#BFD7EA"
+
     property int windowPadding: 20
     property int dockItemsWidth: 30
     property int dockItemsSpacing: 20
 
+    id: main
     visible: true
     title: "TypeX"
     width: 1200
@@ -21,26 +27,34 @@ Window {
         height: parent.height - windowPadding * 2
 
         ListView {
-            objectName: "dock"
             width: dockItemsWidth
             height: 2 * dockItemsWidth
             spacing: dockItemsSpacing
 
             model: ListModel {
-                ListElement { iconSrc: "icons/keyboard.png"; screen: "trainer" }
-                ListElement { iconSrc: "icons/stats.png"; screen: "stats" }
+                ListElement { icon: "keyboard"; screen: "Trainer" }
+                ListElement { icon: "stats"; screen: "Stats" }
             }
 
             delegate: Image {
-                property string imageId: model.screen
-                objectName: imageId
                 width: dockItemsWidth
-                source: model.iconSrc
+                source: `icons/${icon}.png`
                 fillMode: Image.PreserveAspectFit
+                layer.enabled: true
+                layer.effect: ColorOverlay {
+                    color: textColor
+                }
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked:  loader.source = `${model.screen}.qml`
+                    onClicked: {
+                        const component = Qt.createComponent(`screens/${model.screen}.qml`);
+                        if (component.status === Component.Ready) {
+                            const newScreen = component.createObject(navigation);
+                            navigation.pop();
+                            navigation.push(newScreen);
+                        }
+                    }
                 }
             }
         }
@@ -50,11 +64,13 @@ Window {
             width: parent.width - dockItemsWidth - windowPadding
             height: parent.height
             color: backgroundColor
-            Loader {
-                id: loader
+
+            StackView {
+                id: navigation
                 anchors.fill: parent
-                objectName: "loader"
-                source: "trainer.qml"
+                initialItem: Component {
+                    Trainer {}
+                }
             }
         }
     }

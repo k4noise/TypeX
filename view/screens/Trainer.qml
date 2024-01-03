@@ -1,10 +1,11 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import Qt.labs.qmlmodels 1.0
-import "trainer"
+
+import "../components"
 
 Item {
-    property string backgroundColor: "#323031"
-    property string printedCharColor: "#BFD7EA"
+    property string printedCharColor: main.textColor
     property string unprintedCharColor: "#FFC857"
     property string wrongCharColor: "#DB3A34"
 
@@ -15,13 +16,12 @@ Item {
     property int textSize: Math.min(parent.width * 0.03, 36)
 
     id: trainer
-    anchors.fill: parent
 
     Rectangle {
         width: parent.width * 0.7
         height: parent.height * 0.6
+        color: main.backgroundColor
         anchors.centerIn: parent
-        color: backgroundColor
 
         Column {
             width: parent.width
@@ -104,11 +104,12 @@ Item {
             }
 
         }
+
         Rectangle {
             width: parent.width
-            height: textSize * 1.2
+            height: textSize * 1.1
             y: unvisibleText.y
-            color: backgroundColor
+            color: main.backgroundColor
         }
     }
 }
