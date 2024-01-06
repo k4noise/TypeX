@@ -32,27 +32,49 @@ Window {
             spacing: dockItemsSpacing
 
             model: ListModel {
-                ListElement { icon: "keyboard"; screen: "Trainer" }
-                ListElement { icon: "stats"; screen: "Stats" }
+                ListElement { icon: "keyboard"; screen: "Trainer"; tooltip: "Тренажер" }
+                ListElement { icon: "stats"; screen: "Stats"; tooltip: "Статистика" }
             }
 
             delegate: Image {
                 width: dockItemsWidth
-                source: `icons/${icon}.png`
+                source: `icons/${model.icon}.png`
                 fillMode: Image.PreserveAspectFit
                 layer.enabled: true
                 layer.effect: ColorOverlay {
                     color: textColor
                 }
 
+                ToolTip {
+                    x: windowPadding + dockItemsWidth
+                    y: 0
+                    visible: dockItemArea.containsMouse
+                    delay: 500
+                    contentItem: Text {
+                        color: textColor
+                        text: qsTr(model.tooltip)
+                    }
+                    background: Rectangle {
+                        color: backgroundColor
+                        border.color: textColor
+                        radius: 5
+                    }
+                }
+
                 MouseArea {
+                    id: dockItemArea
+                    hoverEnabled: true
                     anchors.fill: parent
                     onClicked: {
+                        if (model.screen === navigation.activeScreen)
+                            return;
+
                         const component = Qt.createComponent(`screens/${model.screen}.qml`);
                         if (component.status === Component.Ready) {
                             const newScreen = component.createObject(navigation);
                             navigation.pop();
                             navigation.push(newScreen);
+                            navigation.activeScreen = model.screen
                         }
                     }
                 }
@@ -66,6 +88,7 @@ Window {
             color: backgroundColor
 
             StackView {
+                property string activeScreen: "Trainer"
                 id: navigation
                 anchors.fill: parent
                 initialItem: Component {

@@ -9,11 +9,14 @@ Item {
     property string unprintedCharColor: "#FFC857"
     property string wrongCharColor: "#DB3A34"
 
-    property string printedText: 'This i'
-    property string wrongChar: 'i'
-    property string activeChar: 's'
-    property string unprintedText: ' a sample unprinted text about'
+    property int visibleRowsCount: 3
     property int textSize: Math.min(parent.width * 0.03, 36)
+    property int maxTextHeight: textSize * 1.15
+
+    property string printedText: "This i"
+    property string wrongChar: "i"
+    property string activeChar: "s"
+    property string unprintedText: " a sample unprinted text about"
 
     id: trainer
 
@@ -23,93 +26,43 @@ Item {
         color: main.backgroundColor
         anchors.centerIn: parent
 
-        Column {
+        ListView {
+            property int nextRowYPosition: 0
+            property var textRowsModel: [
+                [{text: "printed text", type: "printed"}],
+                [
+                    {text: printedText, type: "printed"},
+                    {text: wrongChar, type: "wrong"},
+                    {text: activeChar, type: "active"},
+                    {text: unprintedText, type: "unprinted"},
+                ],
+                [{text: "unprinted text unprinted text unprinted", type: "unprinted"}],
+                [{text: "unprinted text unprinted text ", type: "unprinted"}],
+            ]
+
+            id: textContainer
             width: parent.width
-
-            Text {
-                text: 'printed text'
-                font.pixelSize: textSize
-                color: printedCharColor
-                anchors.horizontalCenter: parent.horizontalCenter
+            height: visibleRowsCount * maxTextHeight
+            model: textRowsModel
+            clip: true
+            interactive: false
+            delegate: TextRow {
+                rowModel: modelData
             }
 
-            Row {
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Repeater {
-                    model: [
-                        {text: printedText, type: 'printed'},
-                        {text: wrongChar, type: 'wrong'},
-                        {text: activeChar, type: 'active'},
-                        {text: unprintedText, type: 'unprinted'},
-                    ]
-
-                    delegate: textTypeChooser
-
-                    DelegateChooser {
-                        id: textTypeChooser
-                        role: "type"
-
-                        DelegateChoice {
-                            roleValue: 'active'
-                            ActiveRowText {
-                                backgroundActiveChar: backgroundColor
-                                activeCharColor: unprintedCharColor
-                            }
-                        }
-
-                        DelegateChoice {
-                            roleValue: 'printed'
-                            Text {
-                                text: modelData.text
-                                font.pixelSize: trainer.textSize
-                                color: printedCharColor
-                            }
-                        }
-
-                        DelegateChoice {
-                            roleValue: 'unprinted'
-                            Text {
-                                text: modelData.text
-                                font.pixelSize: trainer.textSize
-                                color: unprintedCharColor
-                            }
-                        }
-
-                        DelegateChoice {
-                            roleValue: 'wrong'
-                            Text {
-                                text: modelData.text
-                                font.pixelSize: trainer.textSize
-                                color: wrongCharColor
-                            }
-                        }
-                    }
-                }
+            SmoothedAnimation on contentY {
+                id: slideRow
+                running: false
+                from: textContainer.contentY
+                to: textContainer.nextRowYPosition
+                duration: 1500
             }
 
-            Text {
-                text: 'unprinted text unprinted text unprinted'
-                font.pixelSize: textSize
-                color: unprintedCharColor
-                anchors.horizontalCenter: parent.horizontalCenter
+            function slideToNextRow() {
+                console.log(textContainer.nextRowYPosition)
+                textContainer.nextRowYPosition += maxTextHeight
+                slideRow.running = true;
             }
-
-            Text {
-                id: unvisibleText
-                text: 'unprinted text unprinted text '
-                font.pixelSize: textSize
-                color: unprintedCharColor
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-        }
-
-        Rectangle {
-            width: parent.width
-            height: textSize * 1.1
-            y: unvisibleText.y
-            color: main.backgroundColor
         }
     }
 }
