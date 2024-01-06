@@ -1,11 +1,10 @@
 import QtQuick 2.15
 
 Rectangle {
-    property string textColor: "#BFD7EA"
-
     id: stats
     width: parent.width
     height: parent.height
+    color: main.backgroundColor
 
     Text {
         text: "Stats screen"
