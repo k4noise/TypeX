@@ -1,8 +1,10 @@
 import QtQuick 2.15
 
 Rectangle {
-    property string backgroundCharColor: "";
+    property string backgroundCharColor: ""
     property string charColor: ""
+    property string activeChar: ""
+
     color: backgroundCharColor
     width: textSize * 0.6
     height: textSize

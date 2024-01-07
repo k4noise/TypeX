@@ -13,11 +13,6 @@ Item {
     property int textSize: Math.min(parent.width * 0.03, 36)
     property int maxTextHeight: textSize * 1.15
 
-    property string printedText: "This i"
-    property string wrongChar: "i"
-    property string activeChar: "s"
-    property string unprintedText: " a sample unprinted text about"
-
     id: trainer
 
     Rectangle {
@@ -28,22 +23,11 @@ Item {
 
         ListView {
             property int nextRowYPosition: 0
-            property var textRowsModel: [
-                [{text: "printed text", type: "printed"}],
-                [
-                    {text: printedText, type: "printed"},
-                    {text: wrongChar, type: "wrong"},
-                    {text: activeChar, type: "active"},
-                    {text: unprintedText, type: "unprinted"},
-                ],
-                [{text: "unprinted text unprinted text unprinted", type: "unprinted"}],
-                [{text: "unprinted text unprinted text ", type: "unprinted"}],
-            ]
 
             id: textContainer
             width: parent.width
             height: visibleRowsCount * maxTextHeight
-            model: textRowsModel
+            model: wordsViewModel.data
             clip: true
             interactive: false
             delegate: TextRow {

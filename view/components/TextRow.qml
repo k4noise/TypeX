@@ -16,6 +16,7 @@ Row {
             DelegateChoice {
                 roleValue: "active"
                 ActiveChar {
+                    activeChar: modelData.text
                     backgroundCharColor: backgroundColor
                     charColor: unprintedCharColor
                 }
