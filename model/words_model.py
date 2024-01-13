@@ -4,7 +4,7 @@ import markovify
 
 class WordsModel(QAbstractListModel):
   default_rows_count = 4
-  default_row_length = 35
+  default_row_length = 38
   supported_languages = ["ru", "en"]
   _words_generators = {}
 
@@ -48,7 +48,7 @@ class WordsModel(QAbstractListModel):
         break
 
       word = self._unused_words.get()
-      words_length += len(word)
+      words_length += len(word) + 1
       words.append(word)
 
     return " ".join(words)
