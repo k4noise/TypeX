@@ -10,22 +10,11 @@ if __name__ == "__main__":
 
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    data = [
-        [{"text": "printed text", "type": "printed"}],
-        [
-            {"text": "This i", "type": "printed"},
-            {"text": "i", "type": "wrong"},
-            {"text": "s", "type": "active"},
-            {"text": " a sample unprinted text about", "type": "unprinted"},
-        ],
-        [{"text": "unprinted text unprinted text unprinted", "type": "unprinted"}],
-        [{"text": "unprinted text unprinted text ", "type": "unprinted"}],
-    ]
-    words_model_instance = WordsModel(data)
+    words_model_instance = WordsModel()
     words_viewmodel_instance = WordsViewModel(words_model_instance)
     engine.rootContext().setContextProperty("wordsViewModel", words_viewmodel_instance)
 
-    font_id = QFontDatabase.addApplicationFont("view/font/PTMono-Regular.ttf")
+    font_id = QFontDatabase.addApplicationFont("assets/font/PTMono-Regular.ttf")
     loaded_font_families = QFontDatabase.applicationFontFamilies(font_id)
     if loaded_font_families:
         defaultFont = QFont(loaded_font_families[0], 12)
