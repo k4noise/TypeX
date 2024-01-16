@@ -5,14 +5,14 @@ Rectangle {
     property string charColor: ""
     property string activeChar: ""
 
-    color: backgroundCharColor
+    color: charColor
     width: textSize * 0.6
     height: textSize
 
     Text {
         id: activeText
         text: activeChar
-        color: charColor
+        color: backgroundCharColor
         font.pixelSize: textSize
         Timer {
             interval: 500

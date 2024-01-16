@@ -44,14 +44,16 @@ class WordsModel(QAbstractListModel):
     words = []
 
     while not self._unused_words.empty():
-      if words_length + len(self._unused_words.queue[0]) > self.default_row_length:
-        break
+      next_word = self._unused_words.queue[0]
+
+      if words_length + len(next_word) > self.default_row_length:
+          break
 
       word = self._unused_words.get()
       words_length += len(word) + 1
       words.append(word)
 
-    return " ".join(words)
+    return " ".join(words) + " "
 
   def _generate_sentences(self, min_length):
     sentences_length = 0;

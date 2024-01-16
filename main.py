@@ -7,10 +7,10 @@ from viewmodel.words_viewmodel import WordsViewModel
 
 if __name__ == "__main__":
     import sys
-
+    words_model_instance = WordsModel()
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    words_model_instance = WordsModel()
+
     words_viewmodel_instance = WordsViewModel(words_model_instance)
     engine.rootContext().setContextProperty("wordsViewModel", words_viewmodel_instance)
 

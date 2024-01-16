@@ -94,6 +94,9 @@ Window {
                 initialItem: Component {
                     Trainer {}
                 }
+                onCurrentItemChanged: {
+                    currentItem.forceActiveFocus()
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import Qt.labs.qmlmodels 1.0
 
 import "../components"
 
-Item {
+FocusScope {
     property string printedCharColor: main.textColor
     property string unprintedCharColor: "#FFC857"
     property string wrongCharColor: "#DB3A34"
@@ -30,8 +30,22 @@ Item {
             model: wordsViewModel.data
             clip: true
             interactive: false
+            focus: true
+
             delegate: TextRow {
                 rowModel: modelData
+            }
+
+            function updateData(data) {
+                wordsViewModel.updateData(data)
+            }
+
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Backspace) {
+                    updateData(-1)
+                } else if (event.text.length > 0) {
+                    updateData(event.text)
+                }
             }
 
             SmoothedAnimation on contentY {
