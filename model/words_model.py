@@ -46,7 +46,7 @@ class WordsModel(QAbstractListModel):
     while not self._unused_words.empty():
       next_word = self._unused_words.queue[0]
 
-      if words_length + len(next_word) > self.default_row_length:
+      if words_length + len(next_word) + 1 > self.default_row_length:
           break
 
       word = self._unused_words.get()

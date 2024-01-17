@@ -1,9 +1,9 @@
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
 class WordsViewModel(QObject):
-  dataChanged = pyqtSignal()
-  active_row = 0
-  active_char = 0
+  rows_added = pyqtSignal()
+  _active_row = 0
+  _active_char = 0
 
   def __init__(self, model):
     super().__init__()
@@ -18,9 +18,9 @@ class WordsViewModel(QObject):
       else:
         self._change_active_char(value)
 
-      self.dataChanged.emit()
+      self.rows_added.emit()
 
-  @pyqtProperty(list, notify=dataChanged)
+  @pyqtProperty(list, notify=rows_added)
   def data(self):
     return self._words
 
@@ -28,10 +28,10 @@ class WordsViewModel(QObject):
     return [[{"type": "unprinted", "text": char} for char in row] for row in rows]
 
   def _get_active_char(self):
-    return self._words[self.active_row][self.active_char]
+    return self._words[self._active_row][self._active_char]
 
-  def _change_char_type(self, type):
-    self._get_active_char()["type"] = type
+  def _change_char_type(self, char_type):
+    self._get_active_char()["type"] = char_type
 
   def _change_active_char(self, value):
     old_char_text = self._get_active_char()["text"]
@@ -47,13 +47,13 @@ class WordsViewModel(QObject):
     self._change_char_type("active")
 
   def _shift_active_char(self, direction):
-    current_row_length = len(self._words[self.active_row])
+    current_row_length = len(self._words[self._active_row])
 
-    if direction < 0 and self.active_char == 0:
-        self.active_row = max(0, self.active_row - 1)
-        self.active_char = len(self._words[self.active_row])
-    elif direction > 0 and self.active_char == current_row_length - 1:
-        self.active_row = min(self._max_rows_count, self.active_row + 1)
-        self.active_char = 0
+    if direction < 0 and self._active_char == 0:
+        self._active_row = max(0, self._active_row - 1)
+        self._active_char = len(self._words[self._active_row]) - 1
+    elif direction > 0 and self._active_char == current_row_length - 1:
+        self._active_row = min(self._max_rows_count, self._active_row + 1)
+        self._active_char = 0
     else:
-        self.active_char += direction
+        self._active_char += direction

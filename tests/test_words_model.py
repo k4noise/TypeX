@@ -31,6 +31,7 @@ class TestWordsModel(unittest.TestCase):
     sentence = self.words_model._generate_row()
 
     self.assertLessEqual(self.words_model.rowCount(), self.words_model.default_row_length)
+    self.assertEqual(sentence[-1], " ")
     self.assertNotIn(sentence, self.words_model._words)
 
 
