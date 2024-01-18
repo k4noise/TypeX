@@ -1,9 +1,8 @@
-from PyQt5.QtCore import Qt, QAbstractListModel, QModelIndex, QVariant, QTimer
-import sys
+from PyQt5.QtCore import QObject
 from queue import Queue
 import markovify
 
-class WordsModel(QAbstractListModel):
+class WordsModel(QObject):
   default_rows_count = 4
   default_row_length = 38
   supported_languages = ["ru", "en"]
@@ -22,12 +21,6 @@ class WordsModel(QAbstractListModel):
     if len(self._words) == 0:
       self._generate_rows(self.default_rows_count)
 
-  def rowCount(self, parent=None) -> int:
-    return len(self._words)
-
-  def data(self, model_index: QModelIndex, role=Qt.DisplayRole):
-    index = model_index.row()
-    return self._words[index] if index else QVariant()
 
   def _create_generator(self, language):
     with open(f"assets/text/multitext_{language}.txt", encoding='utf-8') as text:

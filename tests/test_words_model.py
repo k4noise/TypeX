@@ -17,9 +17,6 @@ class TestWordsModel(unittest.TestCase):
     for sentence in self.words_model._words:
       self.assertLessEqual(len(sentence), self.words_model.default_row_length)
 
-  def test_row_count(self):
-    self.assertEqual(self.words_model.rowCount(), len(self.words_model._words))
-
   def test_generate_sentences(self):
     self.words_model._unused_words.queue.clear()
     self.words_model._generate_sentences(self.words_model.default_row_length)
@@ -31,7 +28,7 @@ class TestWordsModel(unittest.TestCase):
     self.words_model._generate_sentences(self.words_model.default_row_length)
     sentence = self.words_model._generate_row()
 
-    self.assertLessEqual(self.words_model.rowCount(), self.words_model.default_row_length)
+    self.assertLessEqual(len(self.words_model._words), self.words_model.default_row_length)
     self.assertEqual(sentence[-1], " ")
     self.assertNotIn(sentence, self.words_model._words)
 
