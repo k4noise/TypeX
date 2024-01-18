@@ -1,4 +1,5 @@
-from PyQt5.QtCore import QAbstractListModel, QModelIndex, QVariant, Qt
+from PyQt5.QtCore import Qt, QAbstractListModel, QModelIndex, QVariant, QTimer
+import sys
 from queue import Queue
 import markovify
 
@@ -20,7 +21,6 @@ class WordsModel(QAbstractListModel):
 
     if len(self._words) == 0:
       self._generate_rows(self.default_rows_count)
-
 
   def rowCount(self, parent=None) -> int:
     return len(self._words)
@@ -61,7 +61,7 @@ class WordsModel(QAbstractListModel):
     while sentences_length < min_length:
       sentence = self._current_words_generator.make_sentence();
       if sentence is None: continue
-      sentences_length += len(sentence) + sentences_length > 0
+      sentences_length += len(sentence) + bool(sentences_length > 0)
 
       for word in sentence.split():
         self._unused_words.put(word)
