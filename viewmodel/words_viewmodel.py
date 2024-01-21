@@ -25,9 +25,14 @@ class WordsViewModel(QAbstractListModel):
     if row is None:
        row = self._max_rows_count - 1
 
+    is_full = len(self._words) == self._max_rows_count
+    if is_full: self.removeRow()
+
     self.beginInsertRows(parent, row, row)
     self._words.extend(self._convert(value))
     self.endInsertRows()
+
+    # dataChanged тут не отправляется, потому что вставленная строка не должна отображаться сразу же
     return True
 
   def removeRow(self, row=0, parent=QModelIndex()):
@@ -35,7 +40,7 @@ class WordsViewModel(QAbstractListModel):
     del(self._words[0])
     self.endRemoveRows()
 
-    index = self.index(0,0)
+    index = self.index(row, 0)
     self.dataChanged.emit(index, index)
     return True
 
@@ -79,15 +84,9 @@ class WordsViewModel(QAbstractListModel):
             self._active_char = len(self._words[self._active_row]) - 1
     elif direction > 0 and self._active_char == current_row_length - 1:
         if self._active_row == self.default_active_row:
-            self._add_new_row()
+            self.insertRow(self._model._generate_rows(1))
         else:
-            self._active_row = min(self._max_rows_count, self._active_row + 1)
+            self._active_row = min(self._max_rows_count - 1, self._active_row + 1)
         self._active_char = 0
     else:
         self._active_char += direction
-
-
-  def _add_new_row(self):
-    if len(self._words) == self._max_rows_count:
-      self.removeRow()
-    self.insertRow(self._model._generate_rows(1))

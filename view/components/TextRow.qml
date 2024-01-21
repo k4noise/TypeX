@@ -3,7 +3,7 @@ import Qt.labs.qmlmodels 1.0
 
 Row {
     property var rowModel: []
-    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
 
     Repeater {
         model: rowModel

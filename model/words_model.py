@@ -17,7 +17,7 @@ class WordsModel(QObject):
     self._unused_words = Queue()
 
     for language in self.supported_languages:
-      self._words_generators[language] = self._create_generator(language)
+      self._words_generators[language] = self._create_generator(language).compile()
 
     self._current_words_generator = self._words_generators["ru"]
 
@@ -42,6 +42,10 @@ class WordsModel(QObject):
 
     for _ in range(rows_count):
       generated_rows.append(self._generate_row())
+
+    diff = len(self._words) + rows_count - self.default_rows_count
+    for _ in range(diff):
+      self._words.pop(0)
 
     self._words.extend(generated_rows)
     return generated_rows

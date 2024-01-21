@@ -14,6 +14,41 @@ class TestWordsViewModel(unittest.TestCase):
 
     self.assertListEqual(expected_data, converted_data)
 
+  def test_row_count(self):
+    self.assertEqual(self.words_viewmodel.rowCount(), len(self.words_viewmodel._words))
+
+  def test_get_data(self):
+    row_index = 0
+    index = self.words_viewmodel.index(row_index,0)
+    self.assertEqual(self.words_viewmodel.data(index), self.words_viewmodel._words[row_index])
+
+  def test_delete_row(self):
+    old_rows_length = len(self.words_viewmodel._words)
+    row_index_to_delete = 0
+    deleted_row = self.words_viewmodel._words[row_index_to_delete]
+    self.words_viewmodel.removeRow(row_index_to_delete)
+
+    self.assertEqual(len(self.words_viewmodel._words), old_rows_length - 1)
+    self.assertNotIn(deleted_row, self.words_viewmodel._words)
+
+  def test_insert_row_normal(self):
+    old_rows_length = len(self.words_viewmodel._words)
+    row_to_insert = [["a", "b", "c"]]
+    self.words_viewmodel.insertRow(row_to_insert)
+
+    self.assertEqual(len(self.words_viewmodel._words), old_rows_length + 1)
+    self.assertIn(self.words_viewmodel._convert(row_to_insert)[0], self.words_viewmodel._words)
+
+  def test_insert_row_overflow(self):
+    first_row = self.words_viewmodel._words[0]
+    row_to_insert = [["h", "n"]]
+    self.words_viewmodel.insertRow(row_to_insert)
+    self.words_viewmodel.insertRow(row_to_insert)
+
+    self.assertEqual(len(self.words_viewmodel._words), self.words_viewmodel._max_rows_count)
+    self.assertNotIn(first_row, self.words_viewmodel._words)
+    self.assertIn(self.words_viewmodel._convert(row_to_insert)[0], self.words_viewmodel._words)
+
   def test_get_active_char(self):
     active_char = self.words_viewmodel._words[self.words_viewmodel._active_row][self.words_viewmodel._active_char]
     expected_char = self.words_viewmodel._get_active_char()
@@ -32,7 +67,7 @@ class TestWordsViewModel(unittest.TestCase):
     self.words_viewmodel._shift_active_char(-1)
     self.assertEqual(self.words_viewmodel._active_char, 0)
 
-  def test_shift_active_char_extreme(self):
+  def test_shift_active_char_overflow(self):
     last_row_char_index = len(self.words_viewmodel._words[0]) - 1
     self.words_viewmodel._active_char = last_row_char_index
     old_row = 0

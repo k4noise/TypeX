@@ -17,6 +17,12 @@ class TestWordsModel(unittest.TestCase):
     for sentence in self.words_model._words:
       self.assertLessEqual(len(sentence), self.words_model.default_row_length)
 
+  def test_create_generator(self):
+    language = self.words_model.supported_languages[0]
+    generator = self.words_model._create_generator(language)
+    sentence = generator.make_sentence(tries=100)
+    self.assertTrue(bool(sentence))
+
   def test_generate_sentences(self):
     self.words_model._unused_words.queue.clear()
     self.words_model._generate_sentences(self.words_model.default_row_length)
@@ -32,13 +38,17 @@ class TestWordsModel(unittest.TestCase):
     self.assertEqual(sentence[-1], " ")
     self.assertNotIn(sentence, self.words_model._words)
 
-  def test_generate_rows(self):
+  def test_generate_rows_normal(self):
+    rows_to_generate = 4
+    self.words_model._words.clear()
+    self.words_model._generate_rows(rows_to_generate)
+    self.assertEqual(rows_to_generate, len(self.words_model._words))
+
+  def test_generate_rows_overflow(self):
     rows_to_generate = 4
     old_rows = self.words_model._words.copy()
     self.words_model._generate_rows(rows_to_generate)
-
-    self.assertNotEqual(len(old_rows), len(self.words_model._words))
-    self.assertEqual(len(old_rows) + rows_to_generate, len(self.words_model._words))
+    self.assertEqual(len(old_rows), len(self.words_model._words))
 
 
 if __name__ == '__main__':
