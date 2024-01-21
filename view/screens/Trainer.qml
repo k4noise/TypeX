@@ -22,18 +22,16 @@ FocusScope {
         anchors.centerIn: parent
 
         ListView {
-            property int nextRowYPosition: 0
-
             id: textContainer
             width: parent.width
             height: visibleRowsCount * maxTextHeight
-            model: wordsViewModel.data
+            model: wordsViewModel
             clip: true
             interactive: false
             focus: true
 
             delegate: TextRow {
-                rowModel: modelData
+                rowModel: display
             }
 
             function updateData(data) {
@@ -48,18 +46,12 @@ FocusScope {
                 }
             }
 
-            SmoothedAnimation on contentY {
-                id: slideRow
-                running: false
-                from: textContainer.contentY
-                to: textContainer.nextRowYPosition
-                duration: 1500
+            displaced: Transition {
+                NumberAnimation { properties: "y"; duration: 400; }
             }
 
-            function slideToNextRow() {
-                console.log(textContainer.nextRowYPosition)
-                textContainer.nextRowYPosition += maxTextHeight
-                slideRow.running = true;
+            remove: Transition {
+                NumberAnimation { properties: "y"; from: 0; to: -maxTextHeight; duration: 400 }
             }
         }
     }

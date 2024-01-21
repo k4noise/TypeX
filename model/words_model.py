@@ -1,4 +1,5 @@
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, QTimer
+import sys
 from queue import Queue
 import markovify
 
@@ -6,6 +7,8 @@ class WordsModel(QObject):
   default_rows_count = 4
   default_row_length = 38
   supported_languages = ["ru", "en"]
+  _auto_generate_delay = 5000
+  _min_unused_words = 100
   _words_generators = {}
 
   def __init__(self, words=None, parent=None) -> None:
@@ -21,6 +24,12 @@ class WordsModel(QObject):
     if len(self._words) == 0:
       self._generate_rows(self.default_rows_count)
 
+    if 'unittest' not in sys.modules:
+      self.timer = QTimer()
+      self.timer.setInterval(self._auto_generate_delay)
+      self.timer.timeout.connect(self._auto_generate_sentences)
+      self.timer.start()
+
 
   def _create_generator(self, language):
     with open(f"assets/text/multitext_{language}.txt", encoding='utf-8') as text:
@@ -29,8 +38,13 @@ class WordsModel(QObject):
 
   def _generate_rows(self, rows_count):
     self._generate_sentences(rows_count * self.default_row_length)
+    generated_rows = []
+
     for _ in range(rows_count):
-      self._words.append(self._generate_row())
+      generated_rows.append(self._generate_row())
+
+    self._words.extend(generated_rows)
+    return generated_rows
 
   def _generate_row(self):
     words_length = 0
@@ -58,3 +72,7 @@ class WordsModel(QObject):
 
       for word in sentence.split():
         self._unused_words.put(word)
+
+  def _auto_generate_sentences(self):
+    if self._unused_words.qsize() < self._min_unused_words:
+      self._generate_sentences(self._min_unused_words)
