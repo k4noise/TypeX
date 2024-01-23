@@ -14,10 +14,12 @@ Rectangle {
         text: activeChar
         color: backgroundCharColor
         font.pixelSize: textSize
+
         Timer {
             interval: 500
             running: true
             repeat: true
+
             onTriggered: {
                 [backgroundCharColor, charColor] = [charColor, backgroundCharColor]
             }

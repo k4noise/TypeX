@@ -151,7 +151,7 @@ Window {
                         font.pixelSize:20
                     }
 
-                    onActivated:  {
+                    onActivated: {
                         if (navigation.activeScreen === "Trainer")
                             wordsViewModel.changeLanguage(currentText)
                     }
@@ -165,6 +165,7 @@ Window {
             StackView {
                 property string activeScreen: "Trainer"
                 property bool isPaused: false
+                
                 id: navigation
                 anchors.fill: parent
 

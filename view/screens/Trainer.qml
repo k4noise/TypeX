@@ -39,7 +39,6 @@ FocusScope {
         color: main.backgroundColor
         anchors.centerIn: parent
 
-
         ListView {
             id: textContainer
             width: parent.width
@@ -102,6 +101,7 @@ FocusScope {
                 textContainer.forceActiveFocus()
             }
         }
+        
         PauseMenuButton {
             y: parent.height * 0.4
             label: "Начать заново"

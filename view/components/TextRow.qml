@@ -3,6 +3,7 @@ import Qt.labs.qmlmodels 1.0
 
 Row {
     property var rowModel: []
+
     anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
 
     Repeater {
@@ -15,6 +16,7 @@ Row {
 
             DelegateChoice {
                 roleValue: "active"
+
                 ActiveChar {
                     activeChar: modelData.text
                     backgroundCharColor: backgroundColor
@@ -24,6 +26,7 @@ Row {
 
             DelegateChoice {
                 roleValue: "printed"
+
                 Text {
                     text: modelData.text
                     font.pixelSize: trainer.textSize
@@ -33,6 +36,7 @@ Row {
 
             DelegateChoice {
                 roleValue: "unprinted"
+
                 Text {
                     text: modelData.text
                     font.pixelSize: trainer.textSize
@@ -42,6 +46,7 @@ Row {
 
             DelegateChoice {
                 roleValue: "wrong"
+                
                 Text {
                     text: modelData.text
                     font.pixelSize: trainer.textSize

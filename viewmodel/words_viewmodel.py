@@ -1,17 +1,27 @@
+from enum import Enum
 import time
 from PyQt5.QtCore import Qt, QAbstractListModel, pyqtSlot, QModelIndex, QVariant, pyqtSignal, pyqtProperty
 
 MINUTE = 60
 
+class CharType(Enum):
+   RIGHT = "right"
+   WRONG = "wrong"
+   ACTIVE = "active"
+   UNPRINTED = "unprinted"
+   PRINTED = "printed"
+
 class WordsViewModel(QAbstractListModel):
-  default_active_row = 1
   _pause_toggled = pyqtSignal()
-  _is_paused = False
+  _char_typed = pyqtSignal()
+
+  _default_active_row = 1
   _active_row = 0
   _active_char = 0
 
-  _char_typed = pyqtSignal()
+  _is_paused = False
   _paused_time = 0
+
   _start_typing_time = 0
   _right_chars_typed = 0
   _wrong_chars_typed = 0
@@ -21,7 +31,7 @@ class WordsViewModel(QAbstractListModel):
     self._model = model
     self._max_rows_count = model.default_rows_count
     self._words = self._convert(model._words)
-    self._change_active_char_data("active")
+    self._change_active_char_data(CharType.ACTIVE.value)
 
 
   def rowCount(self, parent=QModelIndex()):
@@ -55,6 +65,7 @@ class WordsViewModel(QAbstractListModel):
     self.dataChanged.emit(index, index)
     return True
 
+
   @pyqtSlot(str)
   def updateData(self, value):
     if value == str(Qt.Key_Escape):
@@ -73,7 +84,7 @@ class WordsViewModel(QAbstractListModel):
     self._reset()
     self._model.change_language(lang)
     self._words.extend(self._convert(self._model._words))
-    self._change_active_char_data("active")
+    self._change_active_char_data(CharType.ACTIVE.value)
     self.layoutChanged.emit()
 
   @pyqtSlot()
@@ -82,7 +93,7 @@ class WordsViewModel(QAbstractListModel):
      self._reset()
      self._model.start_over()
      self._words = self._convert(self._model._words)
-     self._change_active_char_data("active")
+     self._change_active_char_data(CharType.ACTIVE.value)
      self.layoutChanged.emit()
 
   @pyqtProperty(int, notify=_char_typed)
@@ -104,7 +115,7 @@ class WordsViewModel(QAbstractListModel):
 
 
   def _convert(self, rows):
-    return [[{"type": "unprinted", "text": char} for char in row] for row in rows]
+    return [[{"type": CharType.UNPRINTED.value, "text": char} for char in row] for row in rows]
 
   def _get_active_char(self):
     return self._words[self._active_row][self._active_char]
@@ -113,14 +124,14 @@ class WordsViewModel(QAbstractListModel):
     old_char_text = self._get_active_char()["text"]
     if old_char_text == value:
        self._right_chars_typed += 1
-       old_char_type = "printed"
+       old_char_type = CharType.PRINTED.value
     else:
        self._wrong_chars_typed += 1
-       old_char_type = "wrong"
+       old_char_type = CharType.WRONG.value
     self._change_active_char_data(old_char_type, value)
 
     self._shift_active_char(1)
-    self._change_active_char_data("active")
+    self._change_active_char_data(CharType.ACTIVE.value)
 
   def _change_active_char_data(self, char_type, value=None):
     index = self.index(self._active_row, 0)
@@ -130,10 +141,10 @@ class WordsViewModel(QAbstractListModel):
     self.dataChanged.emit(index, index)
 
   def _remove_active_char(self):
-    self._change_active_char_data("unprinted")
+    self._change_active_char_data(CharType.UNPRINTED.value)
     self._shift_active_char(-1)
     right_char = self._model._words[self._active_row][self._active_char]
-    self._change_active_char_data("active", right_char)
+    self._change_active_char_data(CharType.ACTIVE.value, right_char)
 
   def _shift_active_char(self, direction):
     current_row_length = len(self._words[self._active_row])
@@ -143,8 +154,8 @@ class WordsViewModel(QAbstractListModel):
             self._active_row -= 1
             self._active_char = len(self._words[self._active_row]) - 1
     elif direction > 0 and self._active_char == current_row_length - 1:
-        if self._active_row == self.default_active_row:
-            self.insertRows(self._model._generate_rows(1))
+        if self._active_row == self._default_active_row:
+            self.insertRows(self._model.generate_rows(1))
         else:
             self._active_row = min(self._max_rows_count - 1, self._active_row + 1)
         self._active_char = 0

@@ -3,10 +3,11 @@ import QtQuick.Controls 2.15
 
 Button {
     property string label: ""
-    y: parent.height * 0.3
+
     focus: false
-    font.pixelSize: textSize
+    y: parent.height * 0.3
     anchors.horizontalCenter: parent.horizontalCenter
+    font.pixelSize: textSize
 
     background: Rectangle {
         color: main.backgroundColor
