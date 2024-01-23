@@ -28,7 +28,7 @@ class WordsModel(QObject):
     if 'unittest' not in sys.modules:
       self.timer = QTimer()
       self.timer.setInterval(self._auto_generate_delay)
-      self.timer.timeout.connect(self._auto_generate_sentences)
+      self.timer.timeout.connect(self._generate_words)
       self.timer.start()
 
 
@@ -78,7 +78,7 @@ class WordsModel(QObject):
       for word in sentence.split():
         self._unused_words.put(word)
 
-  def _auto_generate_sentences(self):
+  def _generate_words(self):
     if self._unused_words.qsize() < self._min_unused_words:
       self._generate_sentences(self._min_unused_words)
 

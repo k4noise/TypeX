@@ -50,6 +50,31 @@ class TestWordsModel(unittest.TestCase):
     self.words_model._generate_rows(rows_to_generate)
     self.assertEqual(len(old_rows), len(self.words_model._words))
 
+  def test_change_language(self):
+    current_language = self.words_model._active_language
+    with self.assertRaises(ValueError):
+      self.words_model.change_language("1")
+
+    old_words_length = self.words_model._unused_words.qsize()
+    self.assertGreaterEqual(old_words_length, 0)
+
+    new_language = "en"
+    self.words_model.change_language(new_language)
+    self.assertNotEqual(current_language, self.words_model._active_language)
+    self.assertEqual(new_language, self.words_model._active_language)
+    self.assertNotEqual(old_words_length, self.words_model._unused_words.qsize())
+
+
+  def test_generate_words(self):
+    self.words_model._unused_words.queue.clear()
+    self.words_model._generate_words()
+    self.assertGreater(self.words_model._unused_words.qsize(), 0)
+
+  def test_start_over(self):
+    old_words = self.words_model._words.copy()
+    self.words_model.start_over()
+    self.assertNotEqual(old_words, self.words_model._words)
+
 
 if __name__ == '__main__':
     unittest.main()

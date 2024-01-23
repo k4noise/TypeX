@@ -21,7 +21,7 @@ class WordsViewModel(QAbstractListModel):
     self._model = model
     self._max_rows_count = model.default_rows_count
     self._words = self._convert(model._words)
-    self._change_char("active")
+    self._change_active_char_data("active")
 
 
   def rowCount(self, parent=QModelIndex()):
@@ -68,23 +68,21 @@ class WordsViewModel(QAbstractListModel):
       else: self._change_active_char(value)
       self._char_typed.emit()
 
-    else: return
-
   @pyqtSlot(str)
   def changeLanguage(self, lang):
+    self._reset()
     self._model.change_language(lang)
-    self.reset()
     self._words.extend(self._convert(self._model._words))
-    self._change_char("active")
+    self._change_active_char_data("active")
     self.layoutChanged.emit()
 
   @pyqtSlot()
   def startOver(self):
      self._toggle_pause()
-     self.reset()
+     self._reset()
      self._model.start_over()
      self._words = self._convert(self._model._words)
-     self._change_char("active")
+     self._change_active_char_data("active")
      self.layoutChanged.emit()
 
   @pyqtProperty(int, notify=_char_typed)
@@ -111,13 +109,6 @@ class WordsViewModel(QAbstractListModel):
   def _get_active_char(self):
     return self._words[self._active_row][self._active_char]
 
-  def _change_char(self, char_type, value=None):
-    index = self.index(self._active_row, 0)
-    self._get_active_char()["type"] = char_type
-    if value:
-       self._get_active_char()["text"] = value
-    self.dataChanged.emit(index, index)
-
   def _change_active_char(self, value):
     old_char_text = self._get_active_char()["text"]
     if old_char_text == value:
@@ -126,16 +117,23 @@ class WordsViewModel(QAbstractListModel):
     else:
        self._wrong_chars_typed += 1
        old_char_type = "wrong"
-    self._change_char(old_char_type, value)
+    self._change_active_char_data(old_char_type, value)
 
     self._shift_active_char(1)
-    self._change_char("active")
+    self._change_active_char_data("active")
+
+  def _change_active_char_data(self, char_type, value=None):
+    index = self.index(self._active_row, 0)
+    self._get_active_char()["type"] = char_type
+    if value:
+       self._get_active_char()["text"] = value
+    self.dataChanged.emit(index, index)
 
   def _remove_active_char(self):
-    self._change_char("unprinted")
+    self._change_active_char_data("unprinted")
     self._shift_active_char(-1)
     right_char = self._model._words[self._active_row][self._active_char]
-    self._change_char("active", right_char)
+    self._change_active_char_data("active", right_char)
 
   def _shift_active_char(self, direction):
     current_row_length = len(self._words[self._active_row])
@@ -162,7 +160,7 @@ class WordsViewModel(QAbstractListModel):
     self._is_paused = not self._is_paused
     self._pause_toggled.emit()
 
-  def reset(self):
+  def _reset(self):
     self._words.clear()
     self._active_char = 0
     self._active_row = 0
