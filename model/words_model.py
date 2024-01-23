@@ -6,9 +6,9 @@ import markovify
 class WordsModel(QObject):
   default_rows_count = 4
   default_row_length = 38
-  supported_languages = ["ru", "en"]
   _auto_generate_delay = 5000
   _min_unused_words = 100
+  supported_languages = ["ru", "en"]
   _words_generators = {}
 
   def __init__(self, words=None, parent=None) -> None:
@@ -19,7 +19,8 @@ class WordsModel(QObject):
     for language in self.supported_languages:
       self._words_generators[language] = self._create_generator(language).compile()
 
-    self._current_words_generator = self._words_generators["ru"]
+    self._active_language = "ru"
+    self._current_words_generator = self._words_generators[self._active_language]
 
     if len(self._words) == 0:
       self._generate_rows(self.default_rows_count)
@@ -80,3 +81,17 @@ class WordsModel(QObject):
   def _auto_generate_sentences(self):
     if self._unused_words.qsize() < self._min_unused_words:
       self._generate_sentences(self._min_unused_words)
+
+  def start_over(self):
+    self._unused_words.queue.clear()
+    self._words.clear()
+    self._generate_rows(self.default_rows_count)
+
+  def change_language(self, lang):
+    if lang not in self.supported_languages:
+      raise ValueError("Not supported language")
+
+    if self._active_language is not lang:
+      self._active_language = lang
+      self._current_words_generator = self._words_generators[lang]
+      self.start_over()
