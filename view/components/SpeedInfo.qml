@@ -43,7 +43,7 @@ Row {
     Text {
         leftPadding: 10
         color: infoColor
-        font.pixelSize: trainer.textSize
+        font.pixelSize: main.textSize
         text: info
     }
 }

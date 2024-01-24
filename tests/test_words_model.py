@@ -18,7 +18,7 @@ class TestWordsModel(unittest.TestCase):
       self.assertLessEqual(len(sentence), self.words_model._default_row_length)
 
   def test_create_generator(self):
-    language = self.words_model._supported_languages[0]
+    language = self.words_model.supported_languages[0]
     generator = self.words_model._create_generator(language)
     sentence = generator.make_sentence(tries=100)
     self.assertTrue(bool(sentence))
