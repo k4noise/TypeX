@@ -19,8 +19,6 @@ Row {
 
                 ActiveChar {
                     activeChar: modelData.text
-                    backgroundCharColor: backgroundColor
-                    charColor: unprintedCharColor
                 }
             }
 
@@ -46,7 +44,7 @@ Row {
 
             DelegateChoice {
                 roleValue: "wrong"
-                
+
                 Text {
                     text: modelData.text
                     font.pixelSize: trainer.textSize

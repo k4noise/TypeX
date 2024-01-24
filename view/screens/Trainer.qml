@@ -57,11 +57,13 @@ FocusScope {
             }
 
             Keys.onPressed: {
+                const textRegex = /^[ЁёА-я\w ,.!?;:_\-\+=№#'"`]*$/i
+
                 if (event.key == Qt.Key_Backspace) {
                     updateData(Qt.Key_Backspace)
                 } else if (event.key == Qt.Key_Escape) {
                     updateData(Qt.Key_Escape)
-                } else if (event.text.length > 0) {
+                } else if (event.text.length > 0 && textRegex.test(event.text)) {
                     updateData(event.text)
                 }
             }
@@ -101,7 +103,7 @@ FocusScope {
                 textContainer.forceActiveFocus()
             }
         }
-        
+
         PauseMenuButton {
             y: parent.height * 0.4
             label: "Начать заново"
