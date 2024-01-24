@@ -165,7 +165,7 @@ Window {
             StackView {
                 property string activeScreen: "Trainer"
                 property bool isPaused: false
-                
+
                 id: navigation
                 anchors.fill: parent
 

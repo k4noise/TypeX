@@ -72,8 +72,6 @@ class WordsViewModel(QAbstractListModel):
       self._toggle_pause()
 
     elif not self._is_paused:
-      if self._start_typing_time == 0:
-        self._start_typing_time = time.time()
       if value == str(Qt.Key_Backspace):
         self._remove_active_char()
       else: self._change_active_char(value)
@@ -98,6 +96,10 @@ class WordsViewModel(QAbstractListModel):
 
   @pyqtProperty(int, notify=_char_typed)
   def typingSpeed(self):
+    if self._start_typing_time == 0:
+        self._start_typing_time = time.time()
+        return 0
+    
     time_elapsed = time.time() - self._start_typing_time - self._paused_time
     time_elapsed /= MINUTE
     return int(self._right_chars_typed // time_elapsed)
