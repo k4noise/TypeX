@@ -4,6 +4,8 @@ from PyQt5.QtQml import QQmlApplicationEngine
 
 from model.words_model import WordsModel
 from viewmodel.words_viewmodel import WordsViewModel
+from model.stats_model import StatsModel
+from viewmodel.stats_viewmodel import StatsViewModel
 
 if __name__ == "__main__":
     import sys
@@ -13,6 +15,9 @@ if __name__ == "__main__":
     words_model_instance = WordsModel()
     words_viewmodel_instance = WordsViewModel(words_model_instance)
     engine.rootContext().setContextProperty("wordsViewModel", words_viewmodel_instance)
+    stats_model_instance = StatsModel(words_model_instance.supported_languages)
+    stats_viewmodel_instance = StatsViewModel(stats_model_instance)
+    engine.rootContext().setContextProperty("statsViewModel", stats_viewmodel_instance)
 
     app.setWindowIcon(QIcon("assets/icon.png"))
     font_id = QFontDatabase.addApplicationFont("assets/font/PTMono-Regular.ttf")
@@ -21,7 +26,7 @@ if __name__ == "__main__":
         defaultFont = QFont(loaded_font_families[0], 12)
         app.setFont(defaultFont)
 
-    engine.load(QUrl("view/Main.qml"))
+    engine.load(QUrl("view/main.qml"))
 
     if not engine.rootObjects():
         sys.exit(-1)

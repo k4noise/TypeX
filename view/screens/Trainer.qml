@@ -10,8 +10,7 @@ FocusScope {
     property string wrongCharColor: "#DB3A34"
 
     property int visibleRowsCount: 3
-    property int textSize: Math.min(parent.width * 0.03, 36)
-    property int maxTextHeight: textSize * 1.15
+    property int maxTextHeight: main.textSize * 1.15
 
     id: trainer
 
@@ -91,7 +90,7 @@ FocusScope {
             y: 20
             text: qsTr("Пауза")
             color: printedCharColor
-            font.pixelSize: textSize
+            font.pixelSize: main.textSize
         }
 
         PauseMenuButton {
@@ -108,7 +107,15 @@ FocusScope {
             y: parent.height * 0.4
             label: "Начать заново"
 
+            function sendStats(language, speed, mistakes) {
+                statsViewModel.addTypingData(language, speed, mistakes)
+            }
+
             onClicked: {
+                const language = wordsViewModel.activeLanguage,
+                    speed = wordsViewModel.typingSpeed,
+                    mistakes = wordsViewModel.mistakePercentage
+                sendStats(language, speed, mistakes)
                 wordsViewModel.startOver()
                 textContainer.forceActiveFocus()
             }

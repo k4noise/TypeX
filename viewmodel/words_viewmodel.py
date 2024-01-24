@@ -79,8 +79,8 @@ class WordsViewModel(QAbstractListModel):
 
   @pyqtSlot(str)
   def changeLanguage(self, lang):
-    self._reset()
     self._model.change_language(lang)
+    self._reset()
     self._words.extend(self._convert(self._model._words))
     self._change_active_char_data(CharType.ACTIVE.value)
     self.layoutChanged.emit()
@@ -94,14 +94,22 @@ class WordsViewModel(QAbstractListModel):
      self._change_active_char_data(CharType.ACTIVE.value)
      self.layoutChanged.emit()
 
+  @pyqtProperty(str)
+  def activeLanguage(self):
+     return self._model._active_language
+
   @pyqtProperty(int, notify=_char_typed)
   def typingSpeed(self):
     if self._start_typing_time == 0:
         self._start_typing_time = time.time()
         return 0
-    
+
+    if self._right_chars_typed == 0:
+       return 0
+
     time_elapsed = time.time() - self._start_typing_time - self._paused_time
     time_elapsed /= MINUTE
+
     return int(self._right_chars_typed // time_elapsed)
 
   @pyqtProperty(int, notify=_char_typed)

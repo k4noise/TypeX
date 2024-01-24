@@ -27,7 +27,7 @@ Row {
 
                 Text {
                     text: modelData.text
-                    font.pixelSize: trainer.textSize
+                    font.pixelSize: main.textSize
                     color: printedCharColor
                 }
             }
@@ -37,7 +37,7 @@ Row {
 
                 Text {
                     text: modelData.text
-                    font.pixelSize: trainer.textSize
+                    font.pixelSize: main.textSize
                     color: unprintedCharColor
                 }
             }
@@ -47,7 +47,7 @@ Row {
 
                 Text {
                     text: modelData.text
-                    font.pixelSize: trainer.textSize
+                    font.pixelSize: main.textSize
                     color: wrongCharColor
                 }
             }

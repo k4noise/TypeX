@@ -28,6 +28,8 @@ Window {
     property int dockItemsWidth: 30
     property int dockItemsSpacing: 20
 
+    property int textSize: (width - 2 * dockItemsSpacing) * 0.03
+
     id: main
     visible: true
     title: "TypeX"
